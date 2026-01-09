@@ -7,3 +7,4 @@ readme = "README.md"
 license = "Apache-2.0"
 
 [dependencies]
+sdl3 = "0.17.2"
