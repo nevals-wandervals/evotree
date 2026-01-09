@@ -1,0 +1,9 @@
+[package]
+name = "evotree"
+version = "0.0.1"
+edition = "2024"
+authors = ["Nevals Wandervals <nevals.wandervals@yandex.ru>"]
+readme = "README.md"
+license = "Apache-2.0"
+
+[dependencies]
