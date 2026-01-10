@@ -1,8 +1,12 @@
 extern crate sdl3;
 
+use evotree::cell::Cell;
+use evotree::grid::Grid;
+use evotree::traits::GetColor;
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
 use sdl3::pixels::Color;
+use sdl3::rect::Rect;
 use std::time::Duration;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,9 +20,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .map_err(|e| e.to_string())?;
 
-    let mut canvas = window.into_canvas();
+    let mut grid = Grid::new((500, 500));
+    grid.cells[250][250] = Some(Cell::new());
 
-    canvas.set_draw_color(Color::RGB(25, 25, 30));
+    let mut canvas = window.into_canvas();
 
     let mut event_pump = sdl_context.event_pump()?;
     'running: loop {
@@ -33,10 +38,29 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
+        canvas.set_draw_color(Color::RGB(25, 25, 30));
         canvas.clear();
+
+        for (x, row) in grid.cells.iter().enumerate() {
+            for (y, cell) in row.iter().enumerate() {
+                if let Some(cell) = cell {
+                    let color = get_color(cell);
+                    canvas.set_draw_color(color);
+                    canvas
+                        .fill_rect(Rect::new(x as i32, y as i32, 1, 1))
+                        .unwrap();
+                }
+            }
+        }
+
         canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
+        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
 
     Ok(())
+}
+
+fn get_color<T: GetColor>(v: &T) -> Color {
+    let color = v.get_color();
+    Color::RGB(color.0, color.1, color.2)
 }
