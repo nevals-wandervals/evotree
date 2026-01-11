@@ -21,7 +21,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|e| e.to_string())?;
 
     let mut grid = Grid::new((500, 500));
-    grid.cells[250][250] = Some(Cell::new());
+    grid.add(250, 250, Cell::new());
 
     let mut canvas = window.into_canvas();
 
@@ -41,16 +41,13 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         canvas.set_draw_color(Color::RGB(25, 25, 30));
         canvas.clear();
 
-        for (x, row) in grid.cells.iter().enumerate() {
-            for (y, cell) in row.iter().enumerate() {
-                if let Some(cell) = cell {
-                    let color = get_color(cell);
-                    canvas.set_draw_color(color);
-                    canvas
-                        .fill_rect(Rect::new(x as i32, y as i32, 1, 1))
-                        .unwrap();
-                }
-            }
+        for (x, y) in grid.get_pos_alive_cells() {
+            let cell = grid.cells[*x][*y].as_ref().unwrap();
+            let color = get_color(cell);
+            canvas.set_draw_color(color);
+            canvas
+                .fill_rect(Rect::new(*x as i32, *y as i32, 1, 1))
+                .unwrap();
         }
 
         canvas.present();
