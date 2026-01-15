@@ -2,11 +2,13 @@ extern crate sdl3;
 
 use evotree::cell::Cell;
 use evotree::grid::Grid;
-use evotree::traits::GetColor;
+use evotree::traits::{GetColor, GetPosition};
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
 use sdl3::pixels::Color;
 use sdl3::rect::Rect;
+use sdl3::render::Canvas;
+use sdl3::video::Window;
 use std::time::Duration;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -20,8 +22,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .map_err(|e| e.to_string())?;
 
+    let cells = vec![Cell::new((250, 250))];
+
     let mut grid = Grid::new((500, 500));
-    grid.add(250, 250, Cell::new());
+    grid.add(&cells[0]);
 
     let mut canvas = window.into_canvas();
 
@@ -41,20 +45,24 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         canvas.set_draw_color(Color::RGB(25, 25, 30));
         canvas.clear();
 
-        for (x, y) in grid.get_pos_alive_cells() {
-            let cell = grid.cells[*x][*y].as_ref().unwrap();
-            let color = get_color(cell);
-            canvas.set_draw_color(color);
-            canvas
-                .fill_rect(Rect::new(*x as i32, *y as i32, 1, 1))
-                .unwrap();
-        }
+        render(&mut canvas, &cells);
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
 
     Ok(())
+}
+
+fn render<T: GetColor + GetPosition>(canvas: &mut Canvas<Window>, objs: &Vec<T>) {
+    for obj in objs.iter() {
+        let (x, y) = obj.get_position();
+        let color = get_color(obj);
+        canvas.set_draw_color(color);
+        canvas
+            .fill_rect(Rect::new(x as i32, y as i32, 1, 1))
+            .unwrap();
+    }
 }
 
 fn get_color<T: GetColor>(v: &T) -> Color {
