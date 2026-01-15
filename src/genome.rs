@@ -1,5 +1,7 @@
 use std::ops::{Index, IndexMut};
 
+use sdl3::pixels::Color;
+
 use crate::traits::GetColor;
 
 #[derive(Debug, Clone, Copy)]
@@ -87,14 +89,14 @@ impl GetColor for TypeCell {
     /// color trunk: #b1b56bff\
     /// color builder: #42611dff\
     /// color leaf: #659b4eff
-    fn get_color(&self) -> (u8, u8, u8) {
+    fn get_color(&self) -> Color {
         match self {
-            TypeCell::Seed => (0x73, 0x6e, 0x64),
-            TypeCell::Root => (0x8a, 0x47, 0x3b),
-            TypeCell::Trunk => (0xb1, 0xb5, 0x6b),
-            TypeCell::Builder => (0x42, 0x61, 0x1d),
-            TypeCell::Leaf => (0x65, 0x9b, 0x4e),
-            TypeCell::None => (0x00, 0x00, 0x00),
+            TypeCell::Seed => Color::RGB(0x73, 0x6e, 0x64),
+            TypeCell::Root => Color::RGB(0x8a, 0x47, 0x3b),
+            TypeCell::Trunk => Color::RGB(0xb1, 0xb5, 0x6b),
+            TypeCell::Builder => Color::RGB(0x42, 0x61, 0x1d),
+            TypeCell::Leaf => Color::RGB(0x65, 0x9b, 0x4e),
+            TypeCell::None => Color::RGB(0x00, 0x00, 0x00),
         }
     }
 }

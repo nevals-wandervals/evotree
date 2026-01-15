@@ -1,3 +1,5 @@
+use sdl3::pixels::Color;
+
 use crate::{
     genome::{Genome, TypeCell},
     traits::{GetColor, GetPosition},
@@ -33,7 +35,7 @@ impl GetPosition for Cell {
 }
 
 impl GetColor for Cell {
-    fn get_color(&self) -> (u8, u8, u8) {
+    fn get_color(&self) -> Color {
         self.type_cell.get_color()
     }
 }

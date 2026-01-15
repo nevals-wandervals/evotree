@@ -25,7 +25,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cells = vec![Cell::new((250, 250))];
 
     let mut grid = Grid::new((500, 500));
-    grid.add(&cells[0]);
+    grid.add(&cells[0]).unwrap();
 
     let mut canvas = window.into_canvas();
 
@@ -57,15 +57,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn render<T: GetColor + GetPosition>(canvas: &mut Canvas<Window>, objs: &Vec<T>) {
     for obj in objs.iter() {
         let (x, y) = obj.get_position();
-        let color = get_color(obj);
-        canvas.set_draw_color(color);
+        canvas.set_draw_color(obj.get_color());
         canvas
             .fill_rect(Rect::new(x as i32, y as i32, 1, 1))
             .unwrap();
     }
-}
-
-fn get_color<T: GetColor>(v: &T) -> Color {
-    let color = v.get_color();
-    Color::RGB(color.0, color.1, color.2)
 }
